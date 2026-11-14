@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Grupo4CineCartelera.Models;
 using Grupo4CineCartelera.Data;
@@ -16,7 +17,8 @@ public class PeliculasController : Controller
     // GET: PELICULAS
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Peliculas.ToListAsync());
+        var peliculas = _context.Peliculas.Include(p => p.Genero);
+        return View(await peliculas.ToListAsync());
     }
 
     // GET: PELICULAS/Details/5
@@ -28,6 +30,7 @@ public class PeliculasController : Controller
         }
 
         var pelicula = await _context.Peliculas
+            .Include(p => p.Genero)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (pelicula == null)
         {
@@ -40,6 +43,7 @@ public class PeliculasController : Controller
     // GET: PELICULAS/Create
     public IActionResult Create()
     {
+        ViewData["GeneroId"] = new SelectList(_context.Generos, "Id", "Nombre");
         return View();
     }
 
@@ -48,7 +52,7 @@ public class PeliculasController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Titulo,Director,DuracionMinutos")] Pelicula pelicula)
+    public async Task<IActionResult> Create([Bind("Id,Titulo,Director,DuracionMinutos,GeneroId")] Pelicula pelicula)
     {
         if (ModelState.IsValid)
         {
@@ -72,6 +76,7 @@ public class PeliculasController : Controller
         {
             return NotFound();
         }
+        ViewData["GeneroId"] = new SelectList(_context.Generos, "Id", "Nombre", pelicula.GeneroId);
         return View(pelicula);
     }
 
@@ -80,7 +85,7 @@ public class PeliculasController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Titulo,Director,DuracionMinutos")] Pelicula pelicula)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Titulo,Director,DuracionMinutos,GeneroId")] Pelicula pelicula)
     {
         if (id != pelicula.Id)
         {
