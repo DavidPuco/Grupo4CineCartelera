@@ -20,5 +20,9 @@ namespace Grupo4CineCartelera.Models
         [Range(1, 600, ErrorMessage = "La duración debe estar entre 1 y 600 minutos.")]
         [Display(Name = "Duración en minutos")]
         public int DuracionMinutos { get; set; }
+
+        [Display(Name = "Género")]
+        public int GeneroId { get; set; }
+        public Genero? Genero { get; set; }
     }
 }
