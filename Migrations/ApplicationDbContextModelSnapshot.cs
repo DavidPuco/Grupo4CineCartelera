@@ -21,6 +21,26 @@ namespace Grupo4CineCartelera.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Grupo4CineCartelera.Models.Genero", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Generos");
+                });
+
             modelBuilder.Entity("Grupo4CineCartelera.Models.Pelicula", b =>
                 {
                     b.Property<int>("Id")
@@ -37,6 +57,9 @@ namespace Grupo4CineCartelera.Migrations
                     b.Property<int>("DuracionMinutos")
                         .HasColumnType("int");
 
+                    b.Property<int>("GeneroId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -44,7 +67,25 @@ namespace Grupo4CineCartelera.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GeneroId");
+
                     b.ToTable("Peliculas");
+                });
+
+            modelBuilder.Entity("Grupo4CineCartelera.Models.Pelicula", b =>
+                {
+                    b.HasOne("Grupo4CineCartelera.Models.Genero", "Genero")
+                        .WithMany("Peliculas")
+                        .HasForeignKey("GeneroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genero");
+                });
+
+            modelBuilder.Entity("Grupo4CineCartelera.Models.Genero", b =>
+                {
+                    b.Navigation("Peliculas");
                 });
 #pragma warning restore 612, 618
         }
