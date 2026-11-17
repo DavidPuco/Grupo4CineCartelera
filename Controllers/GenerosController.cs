@@ -1,9 +1,11 @@
 
+using Grupo4CineCartelera.Data;
+using Grupo4CineCartelera.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Grupo4CineCartelera.Models;
-using Grupo4CineCartelera.Data;
 
+[Authorize]
 public class GenerosController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -12,13 +14,13 @@ public class GenerosController : Controller
     {
         _context = context;
     }
-
+    [AllowAnonymous]
     // GET: GENEROS
     public async Task<IActionResult> Index()    
     {
         return View(await _context.Generos.ToListAsync());
     }
-
+    [AllowAnonymous]
     // GET: GENEROS/Details/5
     public async Task<IActionResult> Details(int? id)
     {

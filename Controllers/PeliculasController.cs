@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Grupo4CineCartelera.Models;
 using Grupo4CineCartelera.Data;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class PeliculasController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -14,6 +16,7 @@ public class PeliculasController : Controller
         _context = context;
     }
 
+    [AllowAnonymous]
     // GET: PELICULAS
     public async Task<IActionResult> Index()    
     {
@@ -21,6 +24,7 @@ public class PeliculasController : Controller
         return View(await peliculas.ToListAsync());
     }
 
+    [AllowAnonymous]
     // GET: PELICULAS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
