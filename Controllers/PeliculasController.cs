@@ -6,7 +6,7 @@ using Grupo4CineCartelera.Models;
 using Grupo4CineCartelera.Data;
 using Microsoft.AspNetCore.Authorization;
 
-[Authorize]
+[Authorize(Roles = "Curador")]
 public class PeliculasController : Controller
 {
     private readonly ApplicationDbContext _context;

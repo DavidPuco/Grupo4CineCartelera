@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Authorize]
+[Authorize(Roles = "Curador")]
 public class GenerosController : Controller
 {
     private readonly ApplicationDbContext _context;
