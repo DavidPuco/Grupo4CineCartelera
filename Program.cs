@@ -48,4 +48,57 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
+// Inicialización de Roles y Usuarios de prueba (Fase 5)
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    // 1. Crear roles Curador y Espectador si no existen
+    string[] roles = { "Curador", "Espectador" };
+    foreach (var rol in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(rol))
+        {
+            await roleManager.CreateAsync(new IdentityRole(rol));
+        }
+    }
+
+    // 2. Crear usuario Curador (Rol de gestión)
+    string emailCurador = "curador@cine.com";
+    var curador = await userManager.FindByEmailAsync(emailCurador);
+    if (curador == null)
+    {
+        curador = new ApplicationUser
+        {
+            UserName = emailCurador,
+            Email = emailCurador,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(curador, "Curador123!");
+    }
+    if (!await userManager.IsInRoleAsync(curador, "Curador"))
+    {
+        await userManager.AddToRoleAsync(curador, "Curador");
+    }
+
+    // 3. Crear usuario Espectador (Rol de consulta)
+    string emailEspectador = "espectador@cine.com";
+    var espectador = await userManager.FindByEmailAsync(emailEspectador);
+    if (espectador == null)
+    {
+        espectador = new ApplicationUser
+        {
+            UserName = emailEspectador,
+            Email = emailEspectador,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(espectador, "Espectador123!");
+    }
+    if (!await userManager.IsInRoleAsync(espectador, "Espectador"))
+    {
+        await userManager.AddToRoleAsync(espectador, "Espectador");
+    }
+}
+
 app.Run();
